@@ -7,6 +7,7 @@ Development Logs:
 
 Date: Jan, 2014
 Finished:
+
     1. Designed architecture of project.
     
     2. graping HTML codes from web page.
