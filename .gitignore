@@ -2,12 +2,11 @@
 .settings
 bin
 *~
+*.orig
+*.log
 
-/build
-buildSrc/build
-/spring-*/build
-/src/asciidoc/build
 target/
+test-output/
 
 # Eclipse artifacts, including WTP generated manifests
 .classpath
