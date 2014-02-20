@@ -1,6 +1,7 @@
-_Store
+.DS_Store
 .settings
 bin
+*~
 
 /build
 buildSrc/build
