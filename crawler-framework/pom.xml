@@ -20,7 +20,6 @@
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>name.frb.crawler</groupId>
 			<artifactId>crawler-model</artifactId>
