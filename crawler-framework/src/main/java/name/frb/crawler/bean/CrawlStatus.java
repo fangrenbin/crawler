@@ -1,5 +1,8 @@
 package name.frb.crawler.bean;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * CrawlStatus
  * <p/>
@@ -8,9 +11,14 @@ package name.frb.crawler.bean;
  * @date : Jan 24, 2014
  */
 public class CrawlStatus {
-    private Integer status;
+    private String _id;
+    private int crawlId;
+    private int status;
     private String className;
-    private Integer denpendOn;
+    private int denpendOn;
+    private int threadPoolSize;
+    private int maxQueueSize;
+    private Set<String> seedUrls = new HashSet<String>();
 
     /**
      * Constructor
@@ -21,14 +29,23 @@ public class CrawlStatus {
     /**
      * Constructor
      *
-     * @param denpendOn depend on which job
-     * @param status    crawl job status
-     * @param className class name
+     * @param crawlId
+     * @param seedUrls
+     * @param status
+     * @param className
+     * @param denpendOn
+     * @param threadPoolSize
+     * @param maxQueueSize
      */
-    public CrawlStatus(Integer denpendOn, Integer status, String className) {
-        this.denpendOn = denpendOn;
+    public CrawlStatus(String _id, int crawlId, Set<String> seedUrls, int status, String className, int denpendOn, int threadPoolSize, int maxQueueSize) {
+        this._id = _id;
+        this.crawlId = crawlId;
+        this.seedUrls = seedUrls;
         this.status = status;
         this.className = className;
+        this.denpendOn = denpendOn;
+        this.threadPoolSize = threadPoolSize;
+        this.maxQueueSize = maxQueueSize;
     }
 
     /**
@@ -54,11 +71,27 @@ public class CrawlStatus {
         }
     }
 
-    public Integer getStatus() {
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public int getCrawlId() {
+        return crawlId;
+    }
+
+    public void setCrawlId(int crawlId) {
+        this.crawlId = crawlId;
+    }
+
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -70,20 +103,49 @@ public class CrawlStatus {
         this.className = className;
     }
 
-    public Integer getDenpendOn() {
+    public int getDenpendOn() {
         return denpendOn;
     }
 
-    public void setDenpendOn(Integer denpendOn) {
+    public void setDenpendOn(int denpendOn) {
         this.denpendOn = denpendOn;
+    }
+
+    public int getThreadPoolSize() {
+        return threadPoolSize;
+    }
+
+    public void setThreadPoolSize(int threadPoolSize) {
+        this.threadPoolSize = threadPoolSize;
+    }
+
+    public int getMaxQueueSize() {
+        return maxQueueSize;
+    }
+
+    public void setMaxQueueSize(int maxQueueSize) {
+        this.maxQueueSize = maxQueueSize;
+    }
+
+    public Set<String> getSeedUrls() {
+        return seedUrls;
+    }
+
+    public void setSeedUrls(Set<String> seedUrls) {
+        this.seedUrls = seedUrls;
     }
 
     @Override
     public String toString() {
         return "CrawlStatus{" +
-                "status=" + status +
+                "_id='" + _id + '\'' +
+                ", crawlId=" + crawlId +
+                ", status=" + status +
                 ", className='" + className + '\'' +
                 ", denpendOn=" + denpendOn +
+                ", threadPoolSize=" + threadPoolSize +
+                ", maxQueueSize=" + maxQueueSize +
+                ", seedUrls=" + seedUrls +
                 '}';
     }
 }

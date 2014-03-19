@@ -13,6 +13,7 @@ import name.frb.crawler.container.Container;
 import name.frb.crawler.worker.CrawlWorker;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 /**
  * AbstarctCrawlWorker
@@ -22,9 +23,6 @@ import org.apache.commons.lang3.StringUtils;
  * @date : Jan 9, 2014
  */
 public abstract class AbstarctCrawlWorker implements CrawlWorker {
-    /**
-     * GET
-     */
     private static final String REQUEST_TYPE_GET = "GET";
 
     @Override
@@ -46,8 +44,6 @@ public abstract class AbstarctCrawlWorker implements CrawlWorker {
 
         getWebpageContainer().add(webpage);
 
-        System.out.println("抓取网页：" + url);
-
         return true;
     }
 
@@ -58,8 +54,6 @@ public abstract class AbstarctCrawlWorker implements CrawlWorker {
         if (webpage == null) {
             return false;
         }
-
-        System.out.println("解析URL：" + webpage.getUrl());
 
         return parseOperation(webpage);
     }
@@ -90,12 +84,6 @@ public abstract class AbstarctCrawlWorker implements CrawlWorker {
      *
      * @param url
      * @return the content of web page
-     */
-
-    /**
-     *
-     * @param url
-     * @return
      */
     protected String captureWebPage(String url) {
         HttpURLConnection httpUrlConnection = null;
@@ -149,4 +137,6 @@ public abstract class AbstarctCrawlWorker implements CrawlWorker {
     public abstract Container<Webpage> getWebpageContainer();
 
     public abstract boolean doObtainTodoUrl();
+
+    public abstract Logger getLOGGER();
 }

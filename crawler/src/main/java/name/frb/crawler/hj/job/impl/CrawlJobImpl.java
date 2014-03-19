@@ -1,21 +1,27 @@
-package name.frb.crawler.manager.hj.job;
+package name.frb.crawler.hj.job.impl;
 
+import name.frb.crawler.hj.job.CrawlJob;
 import name.frb.crawler.manager.CrawlManager;
 
 /**
- * CrawlJob
+ * CrawlJobImpl
  * <p/>
  *
- * @author : renbin.fang
+ * @author : renbin.fan g
  * @date : Jan 24, 2014
  */
-public class CrawlJob {
+public class CrawlJobImpl implements CrawlJob {
     private CrawlManager nceCrawlManager;
-
     private CrawlManager nceMp3CrawlManager;
 
-    public void init() {
+
+    @Override
+    public void nceCrawlerJob() {
         nceCrawlManager.crawl();
+    }
+
+    @Override
+    public void nceMp3CrawlManager() {
         nceMp3CrawlManager.crawl();
     }
 

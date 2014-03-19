@@ -1,28 +1,15 @@
-/*
- * Create Author  : renbin.fang
- * Create Date    : Jan 23, 2014
- * File Name      : AbstractTestng.java
- */
-
 package name.frb.crawler;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.util.Log4jConfigurer;
 
 import java.io.FileNotFoundException;
 
-/**
- * AbstractTestng
- * <p/>
- *
- * @author : renbin.fang
- * @date : Jan 23, 2014
- */
-@ContextConfiguration(locations = {"classpath:spring/local/applicationContext-*.xml"})
-public abstract class AbstractTestng extends AbstractTestNGSpringContextTests {
+@ContextConfiguration(locations = {"classpath*:spring/common/applicationContext-*.xml"})
+public class AbstractTestng {
     /**
      * LOGGER
      */

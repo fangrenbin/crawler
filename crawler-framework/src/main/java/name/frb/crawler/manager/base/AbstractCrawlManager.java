@@ -1,13 +1,15 @@
 package name.frb.crawler.manager.base;
 
-import name.frb.crawler.bean.CrawlConfig;
+import name.frb.configuration.xmlconfiguration.XmlConfiguration;
 import name.frb.crawler.bean.CrawlFinished;
 import name.frb.crawler.bean.CrawlStatus;
+import name.frb.crawler.config.CrawlConfigReader;
 import name.frb.crawler.manager.CrawlManager;
 import name.frb.crawler.thread.CaptureTask;
 import name.frb.crawler.thread.ConcurrentTaskExecutor;
 import name.frb.crawler.thread.ParseTask;
 import name.frb.crawler.worker.CrawlWorker;
+import org.slf4j.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -24,18 +26,24 @@ public abstract class AbstractCrawlManager implements CrawlManager {
     @Override
     public void crawl() {
         //1. retrieve configuration
-        CrawlConfig config = getCrawlConfig();
+        XmlConfiguration crawlConfig = getCrawlConfig();
+        CrawlConfigReader crawlConfigReader = new CrawlConfigReader(crawlConfig);
+        CrawlStatus crawlStatus = crawlConfigReader.readCrawlConfig(getClass().getName());
+        if (crawlStatus == null) {
+            return;
+        }
+        setCrawlStatus(crawlStatus);
 
 
         //2. save the status of the job into database
-        Integer dependOn = config.getDepend();
-        CrawlStatus crawlStatus = new CrawlStatus(dependOn, CrawlStatus.STATUS.READY.getValue(), getClassName());
-        getMongoTemplate().insert(crawlStatus);
-
+        crawlStatus.setStatus(CrawlStatus.STATUS.READY.getValue());
+        saveCrawlStatus(crawlStatus.getStatus());
 
         //3rd. Check depending whether it finished
-        Query query = new Query(Criteria.where("denpendOn").is(dependOn - 1));
-        if (dependOn > 0 && dependOn != 1) {
+        Integer dependOn = crawlStatus.getDenpendOn();
+        if (dependOn > 0 && dependOn != null) {
+            // get this task's dependent status
+            Query query = new Query(Criteria.where("denpendOn").is(crawlStatus.getDenpendOn() - 1));
             while (true) {
                 CrawlStatus status = getMongoTemplate().findOne(query, CrawlStatus.class);
 
@@ -51,28 +59,26 @@ public abstract class AbstractCrawlManager implements CrawlManager {
             }
         }
 
-        //4th. obtain todo url
+        //4th. obtain toodo url
         CrawlWorker worker = getCrawlWorker();
         boolean success = worker.obtainTodoUrl();
         if (!success) {
-            System.out.println("Failed to obtain todo url");
+            getLOGGER().error("Failed to obtain todo url");
 
             return;
-        } else {
-            System.out.println("Success to obtain todo url");
         }
 
         //4. drop current class from mongodb
         dropHistoryData();
 
         //5. put tasks(crawl and parse) into thread pool
-        ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(config.getThreadPoolSize(), config.getMaxQueueSize());
+        ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(crawlStatus.getThreadPoolSize(), crawlStatus.getMaxQueueSize());
         CrawlFinished crawlFinished = new CrawlFinished(false);
-        for (int i = 1; i <= config.getMaxQueueSize(); i++) {
+        for (int i = 1; i <= crawlStatus.getMaxQueueSize(); i++) {
             executor.execute(new CaptureTask(crawlFinished, worker));
         }
 
-        for (int i = 1; i <= config.getMaxQueueSize(); i++) {
+        for (int i = 1; i <= crawlStatus.getMaxQueueSize(); i++) {
             executor.execute(new ParseTask(crawlFinished, worker));
         }
 
@@ -86,6 +92,7 @@ public abstract class AbstractCrawlManager implements CrawlManager {
                     e.printStackTrace();
 
                     continue;
+
                 }
 
                 continue;
@@ -100,13 +107,41 @@ public abstract class AbstractCrawlManager implements CrawlManager {
 
     }
 
+    /**
+     * Save crawl state
+     *
+     * @param status
+     */
+    private void saveCrawlStatus(int status) {
+        CrawlStatus crawlStatus = getCrawlStatus();
+        crawlStatus.setStatus(status);
+        Query query = new Query(Criteria.where("crawlId").is(crawlStatus.getCrawlId()));
+        CrawlStatus savedStatus = getMongoTemplate().findOne(query, CrawlStatus.class);
+        if (savedStatus != null) {
+            String _id = savedStatus.get_id();
+            crawlStatus.set_id(_id);
+
+            getMongoTemplate().save(crawlStatus);
+        } else {
+            getMongoTemplate().insert(crawlStatus);
+        }
+
+        getLOGGER().info("Saved crawl status. {}", crawlStatus.toString());
+
+        return;
+    }
+
     public abstract CrawlWorker getCrawlWorker();
 
-    public abstract CrawlConfig getCrawlConfig();
-
-    public abstract String getClassName();
+    public abstract XmlConfiguration getCrawlConfig();
 
     public abstract void dropHistoryData();
 
     public abstract MongoTemplate getMongoTemplate();
+
+    public abstract CrawlStatus getCrawlStatus();
+
+    public abstract void setCrawlStatus(CrawlStatus crawlStatus);
+
+    public abstract Logger getLOGGER();
 }

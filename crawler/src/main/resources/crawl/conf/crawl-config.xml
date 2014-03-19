@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <Crawler>
+        <Targets>
+            <Target>
+                <Id>1</Id>
+                <Runable>true</Runable>
+                <SeedUrls>
+                    <SeedUrl>http://www.hjenglish.com/nce/xingainian2/</SeedUrl>
+                </SeedUrls>
+                <Depend>0</Depend>
+                <ClassName>NceCrawlManager</ClassName>
+                <ThreadPoolSize>30</ThreadPoolSize>
+                <MaxQueueSize>15</MaxQueueSize>
+            </Target>
+            <Target>
+                <Id>2</Id>
+                <Runable>true</Runable>
+                <SeedUrls>
+                    <SeedUrl></SeedUrl>
+                </SeedUrls>
+                <Depend>1</Depend>
+                <ClassName>NceMp3CrawlManager</ClassName>
+                <ThreadPoolSize>30</ThreadPoolSize>
+                <MaxQueueSize>15</MaxQueueSize>
+            </Target>
+        </Targets>
+    </Crawler>
+</Root>

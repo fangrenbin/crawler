@@ -4,9 +4,9 @@
  * File Name      : HuJiangCrawlWorker.java
  */
 
-package name.frb.crawler.worker.hj;
+package name.frb.crawler.hj.worker;
 
-import name.frb.crawler.bean.CrawlConfig;
+import name.frb.crawler.bean.CrawlStatus;
 import name.frb.crawler.bean.Webpage;
 import name.frb.crawler.container.Container;
 import name.frb.crawler.container.url.SeedUrlContainer;
@@ -25,11 +25,14 @@ import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * HuJiangCrawlWorker
@@ -39,27 +42,24 @@ import java.util.List;
  * @date : Jan 10, 2014
  */
 public class NceCrawlWorker extends AbstarctCrawlWorker {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final static String UTF8 = "UTF-8";
 
     private Container<String> todoUrlContainer = new TodoUrlContainer();
-
     private Container<String> vistedUrlContainer = new VistedUrlContainer();
-
     private Container<Webpage> webpageContainer = new WebpageContainer();
-
     private Container<String> seedUrlContainer = new SeedUrlContainer();
 
-    private CrawlConfig crawlConfig;
-
     private MongoTemplate mongoTemplate;
+    private CrawlStatus crawlStatus;
 
     /**
      * Constructor
      */
-    public NceCrawlWorker(MongoTemplate mongoTemplate, CrawlConfig crawlConfig) {
+    public NceCrawlWorker(MongoTemplate mongoTemplate, CrawlStatus crawlStatus) {
         super();
-        this.crawlConfig = crawlConfig;
         this.mongoTemplate = mongoTemplate;
+        this.crawlStatus = crawlStatus;
     }
 
     @Override
@@ -163,17 +163,22 @@ public class NceCrawlWorker extends AbstarctCrawlWorker {
 
     @Override
     public boolean doObtainTodoUrl() {
-        List<String> seedList = crawlConfig.getSeedList();
+        Set<String> seedUrlSet = crawlStatus.getSeedUrls();
 
-        if (CollectionUtils.isEmpty(seedList)) {
+        if (CollectionUtils.isEmpty(seedUrlSet)) {
             return false;
         }
 
-        for (String seedUrl : seedList) {
+        for (String seedUrl : seedUrlSet) {
             todoUrlContainer.add(seedUrl);
         }
 
         return true;
+    }
+
+    @Override
+    public Logger getLOGGER() {
+        return LOGGER;
     }
 
     /**

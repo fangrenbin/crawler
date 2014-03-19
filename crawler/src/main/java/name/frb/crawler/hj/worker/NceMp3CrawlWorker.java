@@ -4,7 +4,7 @@
  * File Name      : NceMp3CrawlWorker.java
  */
 
-package name.frb.crawler.worker.hj;
+package name.frb.crawler.hj.worker;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,6 +21,8 @@ import name.frb.crawler.model.hujiang.NceMp3;
 import name.frb.crawler.worker.base.AbstarctCrawlWorker;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.util.CollectionUtils;
 
@@ -31,17 +33,13 @@ import org.springframework.util.CollectionUtils;
  * @date : Jan 20, 2014
  */
 public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
-//    private final static String REGEX_MP3 = "http[s]?:\\/\\/([\\w-]+\\.)+[\\w-]+([\\w-./?%&=]*)?\\.mp3?";
-    private final static String REGEX_MP3 = "http.+?\\.mp3";
-
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final static String REGEX_MP3 = "http[s]?:\\/\\/([\\w-]+\\.)+[\\w-]+([\\w-./?%&=]*)?\\.mp3?";
     private final static String REGEX_TITLE = "(id=\"article_title\">)(.*)(</h1>)";
 
     private Container<String> todoUrlContainer = new TodoUrlContainer();
-
     private Container<String> seedUrlContainer = new SeedUrlContainer();
-
     private Container<String> visitedUrlContainer = new VistedUrlContainer();
-
     private Container<Webpage> webpageContainer = new WebpageContainer();
 
     /**
@@ -82,7 +80,7 @@ public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
      * Author renbin.fang, Jan 10, 2014
      *
      * @param htmlContent
-     * @return
+     * @return mp3 url
      */
     private String findMp3Link(String htmlContent) {
         Pattern p = Pattern.compile(REGEX_MP3);
@@ -95,11 +93,12 @@ public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
     }
 
     /**
+     * find out the lesson title
      * <p/>
      * Author renbin.fang, Jan 14, 2014
      *
      * @param htmlContent
-     * @return
+     * @return lesson title
      */
     private String findLessonTitle(String htmlContent) {
         Pattern p = Pattern.compile(REGEX_TITLE);
@@ -139,9 +138,17 @@ public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
             return false;
         }
 
-        for (NcEnglish nce : nceList) this.todoUrlContainer.add(nce.getLessonUrl());
+        for (NcEnglish nce : nceList) {
+            this.todoUrlContainer.add(nce.getLessonUrl());
+        }
 
         return true;
+    }
+
+
+    @Override
+    public Logger getLOGGER() {
+        return LOGGER;
     }
 
     /**
