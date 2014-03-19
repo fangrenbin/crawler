@@ -13,13 +13,12 @@ import name.frb.crawler.container.base.AbstractContainer;
 
 /**
  * Visted url container
- * <p>
- * 
+ * <p/>
+ *
  * @author : renbin.fang
  * @date : Jan 20, 2014
  */
 public class VistedUrlContainer extends AbstractContainer<String> {
-    /** Serial version UID */
     private Set<String> vistedUrlSet = new HashSet<String>();
 
     @Override

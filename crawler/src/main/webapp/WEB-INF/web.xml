@@ -2,13 +2,28 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-
     <display-name>Archetype Created Web Application</display-name>
+
+    <!-- logger -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log/log4j.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>6000</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
     <!-- 加载spring配置文件的位置 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            <!--classpath*:spring/common/applicationContext-*.xml,-->
+            classpath*:spring/common/applicationContext-*.xml
             classpath:spring/local/applicationContext-*.xml
         </param-value>
     </context-param>

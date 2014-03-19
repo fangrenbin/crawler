@@ -9,8 +9,8 @@
           http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="hjCrawlJob" class="name.frb.crawler.manager.hj.job.CrawlJob" init-method="init">
-        <property name="nceCrawlManager" ref="nceCrawlManager" />
+    <bean id="hjCrawlJob" class="name.frb.crawler.hj.job.impl.CrawlJobImpl">
+        <property name="nceCrawlManager" ref="nceCrawlManager"/>
         <property name="nceMp3CrawlManager" ref="nceMp3CrawlManager"/>
     </bean>
 </beans>

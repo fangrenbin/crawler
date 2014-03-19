@@ -20,7 +20,6 @@
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>name.frb.crawler</groupId>
 			<artifactId>crawler-model</artifactId>
@@ -61,4 +60,8 @@
 			<version>2.2.2</version>
 		</dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+    </build>
 </project>

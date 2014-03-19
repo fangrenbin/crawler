@@ -17,10 +17,9 @@ import name.frb.crawler.worker.CrawlWorker;
  * @date : Jan 14, 2014
  */
 public class CaptureTask implements Runnable {
-    private CrawlFinished crawlFinished;
-
     private final long CYCLE_PERIOD = 1000L;
 
+    private CrawlFinished crawlFinished;
     private CrawlWorker worker;
 
     /**

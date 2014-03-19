@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <!-- Database info -->
+    <entry key="Database.DriverClass">com.mysql.jdbc.Driver</entry>
+    <entry key="Database.ConnectionUrl">jdbc:mysql://127.0.0.1:3306/result_analyzer?characterEncoding=UTF8</entry>
+    <entry key="Database.Username">root</entry>
+    <entry key="Database.Password"> </entry>
+
+    <!-- C3p0 -->
+    <entry key="C3p0.MaxPoolSize">30</entry>
+    <entry key="C3p0.MinPoolSize">5</entry>
+    <entry key="C3p0.InitalPoolSize">15</entry>
+
+    <project>
+        <name>cralwer</name>
+    </project>
+</Root>
