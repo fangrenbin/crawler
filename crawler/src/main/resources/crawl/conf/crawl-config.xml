@@ -6,7 +6,10 @@
                 <Id>1</Id>
                 <Runable>true</Runable>
                 <SeedUrls>
+                    <SeedUrl>http://www.hjenglish.com/nce/xingainian1/</SeedUrl>
                     <SeedUrl>http://www.hjenglish.com/nce/xingainian2/</SeedUrl>
+                    <SeedUrl>http://www.hjenglish.com/nce/xingainian3/</SeedUrl>
+                    <SeedUrl>http://www.hjenglish.com/nce/xingainian4/</SeedUrl>
                 </SeedUrls>
                 <Depend>0</Depend>
                 <ClassName>NceCrawlManager</ClassName>

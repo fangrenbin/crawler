@@ -4,6 +4,7 @@ import name.frb.configuration.xmlconfiguration.XmlConfiguration;
 import name.frb.crawler.AbstractTestng;
 import name.frb.crawler.bean.CrawlStatus;
 import name.frb.crawler.hj.manager.NceCrawlManager;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,7 +28,15 @@ public class CrawlConfigReaderTest extends AbstractTestng {
 
         Set<String> seedSet = crawlStatus.getSeedUrls();
         for (String seed : seedSet) {
-            Assert.assertEquals(seed, "http://www.hjenglish.com/nce/xingainian2/");
+            if (StringUtils.contains(seed, "xingainian1")) {
+                Assert.assertEquals(seed, "http://www.hjenglish.com/nce/xingainian1/");
+            } else if (StringUtils.contains(seed, "xingainian2")) {
+                Assert.assertEquals(seed, "http://www.hjenglish.com/nce/xingainian2/");
+            } else if (StringUtils.contains(seed, "xingainian3")) {
+                Assert.assertEquals(seed, "http://www.hjenglish.com/nce/xingainian3/");
+            } else if (StringUtils.contains(seed, "xingainian4")) {
+                Assert.assertEquals(seed, "http://www.hjenglish.com/nce/xingainian4/");
+            }
         }
     }
 }

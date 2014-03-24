@@ -52,7 +52,7 @@ public class CrawlConfigReader {
             crawlStatus.setMaxQueueSize(crawlConfig.getIntger("Crawler.Targets.Target(" + i + ").MaxQueueSize"));
             crawlStatus.setThreadPoolSize(crawlConfig.getIntger("Crawler.Targets.Target(" + i + ").ThreadPoolSize"));
 
-            List<?> seedsList = crawlConfig.getXmlConfig().configurationsAt("Crawler.Targets.Target(" + i + ").SeedUrls");
+            List<?> seedsList = crawlConfig.getXmlConfig().configurationsAt("Crawler.Targets.Target(" + i + ").SeedUrls.SeedUrl");
             if (CollectionUtils.isNotEmpty(seedsList)) {
                 Set<String> seedsSet = crawlStatus.getSeedUrls();
                 for (int j = 0; j < seedsList.size(); j++) {

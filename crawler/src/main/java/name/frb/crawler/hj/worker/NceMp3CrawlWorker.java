@@ -35,7 +35,7 @@ import org.springframework.util.CollectionUtils;
 public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final static String REGEX_MP3 = "http[s]?:\\/\\/([\\w-]+\\.)+[\\w-]+([\\w-./?%&=]*)?\\.mp3?";
-    private final static String REGEX_TITLE = "(id=\"article_title\">)(.*)(</h1>)";
+    private final static String REGEX_TITLE = "(<title>)(.*)(</title>)";
 
     private Container<String> todoUrlContainer = new TodoUrlContainer();
     private Container<String> seedUrlContainer = new SeedUrlContainer();
@@ -63,11 +63,12 @@ public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
         }
 
         NceMp3 nceMp3 = new NceMp3();
-        String title = findLessonTitle(content);
-        String mp3url = findMp3Link(content);
 
-        nceMp3.setTitle(title);
-        nceMp3.setMp3Url(mp3url);
+        String lessonTitle = findLessonTitle(content);
+        nceMp3.setTitle(lessonTitle);
+        nceMp3.setBookNumber(findBookNumber(lessonTitle));
+        nceMp3.setPronounceType(findPronounceType(lessonTitle));
+        nceMp3.setMp3Url(findMp3Link(content));
 
         mongoTemplate.insert(nceMp3);
 
@@ -104,11 +105,75 @@ public class NceMp3CrawlWorker extends AbstarctCrawlWorker {
         Pattern p = Pattern.compile(REGEX_TITLE);
         Matcher m = p.matcher(htmlContent);
 
+        String titleContent = null;
+        String lessonTitle = null;
+
         if (m.find() && m.groupCount() == 3) {
-            return m.group(2);
-        } else {
-            return null;
+            titleContent = m.group(2);
         }
+
+        if (StringUtils.isEmpty(titleContent)) {
+            return lessonTitle;
+        }
+
+        String[] strs = StringUtils.split(titleContent, "_");
+        if (strs.length == 0) {
+            return lessonTitle;
+        } else {
+            lessonTitle = strs[0];
+        }
+
+        return lessonTitle;
+    }
+
+    /**
+     * find book number from lesson title
+     *
+     * @param lessonTitle
+     * @return book number
+     */
+    private int findBookNumber(String lessonTitle) {
+        int bookNumber = 0;
+        if (StringUtils.isEmpty(lessonTitle)) {
+            return bookNumber;
+        }
+
+        if (StringUtils.contains(lessonTitle, "一")) {
+
+            bookNumber = NceMp3.BOOK_NUM.ONE.getValue();
+        } else if (StringUtils.contains(lessonTitle, "二")) {
+
+            bookNumber = NceMp3.BOOK_NUM.TWO.getValue();
+        } else if (StringUtils.contains(lessonTitle, "三")) {
+
+            bookNumber = NceMp3.BOOK_NUM.THREE.getValue();
+        } else if (StringUtils.contains(lessonTitle, "四")) {
+
+            bookNumber = NceMp3.BOOK_NUM.FOUR.getValue();
+        }
+
+        return bookNumber;
+    }
+
+    /**
+     * find pronounce type which includes american, england.
+     *
+     * @param lessonTitle
+     * @return pronounce type
+     */
+    private int findPronounceType(String lessonTitle) {
+        int pronounceType = 0;
+        if (org.apache.commons.lang.StringUtils.isEmpty(lessonTitle)) {
+            return pronounceType;
+        }
+
+        if (org.apache.commons.lang.StringUtils.contains(lessonTitle, "英音")) {
+            pronounceType = NceMp3.PRONOUNCE_TYPE.ENGLIAND.getValue();
+        } else if (org.apache.commons.lang.StringUtils.contains(lessonTitle, "美音")) {
+            pronounceType = NceMp3.PRONOUNCE_TYPE.AMERICAN.getValue();
+        }
+
+        return pronounceType;
     }
 
     @Override

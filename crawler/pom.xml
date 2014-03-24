@@ -31,11 +31,6 @@
             <artifactId>quartz</artifactId>
             <version>1.8.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.htmlparser</groupId>
-            <artifactId>htmlparser</artifactId>
-            <version>1.6</version>
-        </dependency>
     </dependencies>
 
     <build>

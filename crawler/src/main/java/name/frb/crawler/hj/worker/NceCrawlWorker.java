@@ -16,15 +16,6 @@ import name.frb.crawler.container.webpage.WebpageContainer;
 import name.frb.crawler.model.hujiang.NcEnglish;
 import name.frb.crawler.worker.base.AbstarctCrawlWorker;
 import org.apache.commons.lang3.StringUtils;
-import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
-import org.htmlparser.Parser;
-import org.htmlparser.filters.NodeClassFilter;
-import org.htmlparser.filters.OrFilter;
-import org.htmlparser.tags.ImageTag;
-import org.htmlparser.tags.LinkTag;
-import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -33,6 +24,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * HuJiangCrawlWorker
@@ -43,7 +36,9 @@ import java.util.Set;
  */
 public class NceCrawlWorker extends AbstarctCrawlWorker {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     private final static String UTF8 = "UTF-8";
+    private final static String REGEX_MP3 = "http://app.\\w+.com/listen/\\d+/";
 
     private Container<String> todoUrlContainer = new TodoUrlContainer();
     private Container<String> vistedUrlContainer = new VistedUrlContainer();
@@ -89,53 +84,14 @@ public class NceCrawlWorker extends AbstarctCrawlWorker {
     private List<NcEnglish> parseParentPage(String parentPageContent) {
         List<NcEnglish> lessonList = new ArrayList<NcEnglish>();
 
-        Parser parser = null;
-        try {
-            parser = new Parser(parentPageContent);
-            parser.setEncoding(UTF8);
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
+        Pattern p = Pattern.compile(REGEX_MP3);
+        Matcher m = p.matcher(parentPageContent);
 
-        NodeFilter frameFilter = new NodeFilter() {
-            /** Serial version UID */
-            private static final long serialVersionUID = 1L;
+        while (m.find()) {
+            NcEnglish ncEnglish = new NcEnglish();
+            ncEnglish.setLessonUrl(m.group());
 
-            public boolean accept(Node node) {
-                if (node.getText().startsWith("frame =")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-
-        OrFilter orFilter = new OrFilter(new NodeClassFilter(LinkTag.class), new NodeClassFilter(ImageTag.class));
-        OrFilter linkFilter = new OrFilter(orFilter, frameFilter);
-
-        try {
-            NodeList list = parser.extractAllNodesThatMatch(linkFilter);
-            for (int i = 0; i < list.size(); i++) {
-                Node tag = list.elementAt(i);
-
-                if (tag instanceof LinkTag) {
-                    LinkTag link = (LinkTag) tag;
-                    String linkUrl = link.getLink();
-                    String stringText = link.getStringText();
-
-                    if (stringText.startsWith("新概念英语第一册Lesson") || stringText.startsWith("新概念英语第二册lesson") || stringText.startsWith("新概念英语第二册Lesson")
-                            || stringText.startsWith("新概念英语第二册 lesson") || stringText.startsWith("新概念英语第三册lesson")) {
-
-                        NcEnglish ncenglish = new NcEnglish();
-                        ncenglish.setLessonUrl(linkUrl);
-                        ncenglish.setTitle(stringText);
-
-                        lessonList.add(ncenglish);
-                    }
-                }
-            }
-        } catch (ParserException e) {
-            e.printStackTrace();
+            lessonList.add(ncEnglish);
         }
 
         return lessonList;
