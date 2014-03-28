@@ -19,9 +19,20 @@
             <name>renbin.fang</name>
             <email>fangrenbin@gmail.com</email>
             <url>http://frb.name</url>
-            <timezone>CST</timezone>
+            <timezone>8</timezone>
         </developer>
     </developers>
+
+    <repositories>
+        <repository>
+            <id>framework-mvn-repo</id>
+            <url>https://raw.github.com/fangrenbin/framework/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -38,21 +49,6 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>5.14.10</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.1</version>
         </dependency>
     </dependencies>
 </project>
